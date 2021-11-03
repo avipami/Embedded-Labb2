@@ -3,12 +3,20 @@
 #include <util/delay.h>
 #include "leds.h"
 
-
-void initTimer()
+void initPWMTimer()
 {
-    TCCR0A |= (1 << WGM01);
-    TCCR0B |= (1 << CS00) | (1 << CS02);
-    OCR0A = 155; // ((CPU_HZ) / ( prescale * hz) -1)    16000000 / (1024 * 100)-1 = 155 
-                //                                         15625 / 100 = 156
-    TCNT0 = 0; // Counts until OCR0A is reached and then interrupts
+    TCCR2A |= (1 << WGM20) | (1 << WGM21) | (1 << COM2A1);//NonInvert mode and fast pwm active
+    TCCR2B |= (1 << CS20) | (1 << CS21);
+
+}
+
+int interruptCalculator(int mhz, int prescale, int interruptMs)
+{
+    return interruptMs*1000/16;
+}
+
+
+void setPWMOutput(int duty)
+{
+    OCR2A = duty;
 }
